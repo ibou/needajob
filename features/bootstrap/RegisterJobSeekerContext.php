@@ -7,8 +7,6 @@ use App\Entity\JobSeeker;
 use App\UseCase\RegisterJobSeeker;
 use Assert\Assertion;
 use Behat\Behat\Context\Context;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
-use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * Class RegisterJobSeekerContext
@@ -17,12 +15,22 @@ use Symfony\Component\Security\Core\User\UserInterface;
 class RegisterJobSeekerContext implements Context
 {
 
+    /**
+     * @var RegisterJobSeeker
+     */
+    private RegisterJobSeeker $registerJobSeeker;
+
+    /**
+     * @var JobSeeker
+     */
+    private JobSeeker $jobSeeker;
 
     /**
      * @Given /^I need to register to look for a new job$/
      */
     public function iNeedToRegisterToLookForANewJob()
     {
+        $this->registerJobSeeker = new RegisterJobSeeker(new JobSeekerRepository());
     }
 
     /**
@@ -31,6 +39,11 @@ class RegisterJobSeekerContext implements Context
      */
     public function iFillTheRegistrationForm()
     {
+        $this->jobSeeker = new JobSeeker();
+        $this->jobSeeker->setPlainPassword('Coco9!X$');
+        $this->jobSeeker->setEmail('email@email.com');
+        $this->jobSeeker->setFirstName('John');
+        $this->jobSeeker->setLastName('Doe');
     }
 
     /**
@@ -38,5 +51,6 @@ class RegisterJobSeekerContext implements Context
      */
     public function iCanLogInWithMyNewAccount()
     {
+        Assertion::eq($this->jobSeeker, $this->registerJobSeeker->execute($this->jobSeeker));
     }
 }

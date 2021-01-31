@@ -4,12 +4,10 @@ namespace App\Features;
 
 use App\Adapter\InMemory\Repository\RecruiterRepository;
 use App\Entity\Recruiter;
+use App\UseCase\RegisterJobSeeker;
 use App\UseCase\RegisterRecruiter;
 use Assert\Assertion;
 use Behat\Behat\Context\Context;
-use Behat\Behat\Tester\Exception\PendingException;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
-use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * Class RegisterRecruiterContext
@@ -17,12 +15,16 @@ use Symfony\Component\Security\Core\User\UserInterface;
  */
 class RegisterRecruiterContext implements Context
 {
+    private RegisterRecruiter $registerRecruiter;
+
+    private Recruiter $recruiter;
 
     /**
      * @Given /^I need to register to recruit new employees$/
      */
     public function iNeedToRegisterToRecruitNewEmployees()
     {
+        $this->registerRecruiter = new RegisterRecruiter(new RecruiterRepository());
     }
 
     /**
@@ -31,6 +33,12 @@ class RegisterRecruiterContext implements Context
      */
     public function iFillTheRegistrationForm()
     {
+        $this->recruiter = new Recruiter();
+        $this->recruiter->setPlainPassword('Coco9!X$');
+        $this->recruiter->setEmail('email@email.com');
+        $this->recruiter->setFirstName('John');
+        $this->recruiter->setLastName('Doe');
+        $this->recruiter->setCompanyName('Web leaser');
     }
 
     /**
@@ -38,5 +46,6 @@ class RegisterRecruiterContext implements Context
      */
     public function iCanLogInWithMyNewAccount()
     {
+        Assertion::eq($this->recruiter, $this->registerRecruiter->execute($this->recruiter));
     }
 }
