@@ -43,3 +43,17 @@ analyze:
 	vendor/bin/phpcbf --standard=PSR12 src
 	vendor/bin/phpcbf --standard=PSR12 tests
 	vendor/bin/phpcbf --standard=PSR12 features
+
+tests-unit: ## Run only tests unit
+	vendor/bin/simple-phpunit --testsuite unit --stop-on-failure
+
+tests-integration: ## Run only tests integration
+	vendor/bin/simple-phpunit --testsuite integration --stop-on-failure
+
+tests-behat: ## Run only tests Behat
+	vendor/bin/behat --stop-on-failure
+
+tests-all: \
+	tests-behat \
+	tests-unit \
+	tests-integration

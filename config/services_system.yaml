@@ -1,0 +1,2 @@
+imports:
+    - { resources: services_prod.yaml }
