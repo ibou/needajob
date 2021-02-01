@@ -1,2 +1,2 @@
 imports:
-    - { resources: services_prod.yaml }
+  - { resource: services_prod.yaml }
