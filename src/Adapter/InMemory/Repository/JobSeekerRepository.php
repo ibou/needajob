@@ -9,6 +9,5 @@ class JobSeekerRepository implements JobSeekerGateway
 {
     public function register(JobSeeker $jobSeeker): void
     {
-        // TODO: Implement register() method.
     }
 }

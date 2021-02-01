@@ -50,6 +50,9 @@ tests-unit: ## Run only tests unit
 tests-integration: ## Run only tests integration
 	vendor/bin/simple-phpunit --testsuite integration --stop-on-failure
 
+tests-system: ## Run only tests integration
+	vendor/bin/simple-phpunit --testsuite system --stop-on-failure
+
 tests-behat: ## Run only tests Behat
 	vendor/bin/behat --stop-on-failure
 
