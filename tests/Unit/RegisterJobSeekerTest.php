@@ -7,6 +7,7 @@ use App\Entity\JobSeeker;
 use App\UseCase\RegisterJobSeeker;
 use Assert\LazyAssertionException;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class RegisterJobSeekerTest extends TestCase
 {
@@ -16,16 +17,21 @@ class RegisterJobSeekerTest extends TestCase
      */
     public function testBadJobSeeker(JobSeeker $jobSeeker): void
     {
-        $useCase = new RegisterJobSeeker(new JobSeekerRepository());
+        $userPasswordEncoder = $this->createMock(UserPasswordEncoderInterface::class);
+        $useCase = new RegisterJobSeeker(new JobSeekerRepository(), $userPasswordEncoder);
         $this->expectException(LazyAssertionException::class);
         $useCase->execute($jobSeeker);
     }
 
     public function testSuccessfullRegistration(): void
     {
-        $useCase = new RegisterJobSeeker(new JobSeekerRepository());
+        
+        $userPasswordEncoder = $this->createMock(UserPasswordEncoderInterface::class);
+        $userPasswordEncoder->method("encodePassword")->willReturn("hash_password");
+        
+        $useCase = new RegisterJobSeeker(new JobSeekerRepository(), $userPasswordEncoder);
         $jobSeeker = new JobSeeker();
-        $jobSeeker->setPlainPassword('Samourail$');
+        $jobSeeker->setPlainPassword('Samourai!l');
         $jobSeeker->setEmail('email@email.com');
         $jobSeeker->setFirstName('John');
         $jobSeeker->setLastName('Doe');
