@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Security\Provider;
 
+use App\Entity\JobSeeker;
+use App\Entity\Recruiter;
 use App\Entity\User;
 use App\Gateway\UserGateway;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -59,6 +61,10 @@ class UserProvider implements UserProviderInterface
      */
     public function supportsClass(string $class)
     {
-        return $class === User::class;
+        return
+            $class === User::class
+            || JobSeeker::class === $class
+            || Recruiter::class === $class
+            ;
     }
 }
