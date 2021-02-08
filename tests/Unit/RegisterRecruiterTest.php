@@ -2,13 +2,12 @@
 
 namespace App\Tests\Unit;
 
-use App\Adapter\InMemory\Repository\JobSeekerRepository;
 use App\Adapter\InMemory\Repository\RecruiterRepository;
 use App\Entity\Recruiter;
-use App\UseCase\RegisterJobSeeker;
 use App\UseCase\RegisterRecruiter;
 use Assert\LazyAssertionException;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class RegisterRecruiterTest extends TestCase
 {
@@ -18,14 +17,24 @@ class RegisterRecruiterTest extends TestCase
      */
     public function testBadRecruiter(Recruiter $recruiter): void
     {
-        $useCase = new RegisterRecruiter(new RecruiterRepository());
+        $userPasswordEncoder = $this->createMock(UserPasswordEncoderInterface::class);
+
+        $userPasswordEncoder->method('encodePassword')->willReturn('hast_password');
+
+        $useCase = new RegisterRecruiter(new RecruiterRepository($userPasswordEncoder));
+
+
         $this->expectException(LazyAssertionException::class);
         $useCase->execute($recruiter);
     }
 
     public function testSuccessfullRegistration(): void
     {
-        $useCase = new RegisterRecruiter(new RecruiterRepository());
+        $userPasswordEncoder = $this->createMock(UserPasswordEncoderInterface::class);
+
+        $userPasswordEncoder->method('encodePassword')->willReturn('hast_password');
+        $useCase = new RegisterRecruiter(new RecruiterRepository($userPasswordEncoder));
+
         $recruiter = new Recruiter();
         $recruiter->setPlainPassword('Samourail$');
         $recruiter->setEmail('email@email.com');

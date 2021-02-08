@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Tests\System;
 
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
@@ -17,5 +16,4 @@ trait SystemTestTrait
     {
         return WebTestCase::createClient(["environment" => "system"]);
     }
-    
 }

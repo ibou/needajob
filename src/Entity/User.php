@@ -126,19 +126,18 @@ abstract class User implements UserInterface
     {
         return $this->registeredAt;
     }
-    
 
-    
+
+
     public function getSalt()
     {
-    
     }
-    
+
     public function getUsername()
     {
         return $this->email;
     }
-    
+
     public function eraseCredentials()
     {
     }
