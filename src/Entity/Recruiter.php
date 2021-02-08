@@ -30,7 +30,7 @@ class Recruiter extends User
         $this->companyName = $companyName;
         return $this;
     }
-    
+
     /**
      * @inheritDoc
      */

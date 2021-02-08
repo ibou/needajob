@@ -5,16 +5,13 @@ namespace App\UseCase;
 use App\Entity\JobSeeker;
 use App\Gateway\JobSeekerGateway;
 use Assert\Assert;
-
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
-
-use function Symfony\Component\DependencyInjection\Loader\Configurator\param;
 
 class RegisterJobSeeker
 {
     private JobSeekerGateway $jobSeekerGateway;
     private UserPasswordEncoderInterface $encoder;
-    
+
     /**
      * RegisterJobSeeker constructor.
      * @param JobSeekerGateway $jobSeekerGateway
@@ -25,8 +22,8 @@ class RegisterJobSeeker
         $this->jobSeekerGateway = $jobSeekerGateway;
         $this->encoder = $encoder;
     }
-    
-    
+
+
     /**
      * @param JobSeeker $jobSeeker
      * @return JobSeeker
@@ -45,11 +42,11 @@ class RegisterJobSeeker
             ->notBlank()
             ->email()
             ->verifyNow();
-     
+
         $jobSeeker->setPassword(
             $this->encoder->encodePassword($jobSeeker, $jobSeeker->getPlainPassword())
         );
-        
+
         $this->jobSeekerGateway->register($jobSeeker);
         return $jobSeeker;
     }

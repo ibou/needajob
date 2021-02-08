@@ -7,7 +7,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\RouterInterface;
 
-class RegisterJobSeekerTest extends WebTestCase
+class RegisterRecruiterTest extends WebTestCase
 {
     public function testSuccessfullRegistration(): void
     {
@@ -18,7 +18,7 @@ class RegisterJobSeekerTest extends WebTestCase
 
         $crawler = $client->request(
             Request::METHOD_GET,
-            $router->generate("register_job_seeker")
+            $router->generate("register_recruiter")
         );
 
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
@@ -29,6 +29,7 @@ class RegisterJobSeekerTest extends WebTestCase
                 "registration[lastName]" => "Doe",
                 "registration[email]" => "email@email.com",
                 "registration[plainPassword]" => "Password123!",
+                "registration[companyName]" => "Oil Ltd Techn!",
             ]
         );
 
@@ -51,7 +52,7 @@ class RegisterJobSeekerTest extends WebTestCase
 
         $crawler = $client->request(
             Request::METHOD_GET,
-            $router->generate("register_job_seeker")
+            $router->generate("register_recruiter")
         );
 
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
@@ -73,6 +74,7 @@ class RegisterJobSeekerTest extends WebTestCase
                 "registration[lastName]" => "Doe",
                 "registration[email]" => "email@email.com",
                 "registration[plainPassword]" => "Password123!",
+                "registration[companyName]" => "JFEAB LS",
             ],
             "Cette valeur ne doit pas être vide.",
         ];
@@ -84,6 +86,7 @@ class RegisterJobSeekerTest extends WebTestCase
                 "registration[lastName]" => "",
                 "registration[email]" => "email@email.com",
                 "registration[plainPassword]" => "Password123!",
+                "registration[companyName]" => "JFEAB LS",
             ],
             "Cette valeur ne doit pas être vide.",
         ];
@@ -94,6 +97,7 @@ class RegisterJobSeekerTest extends WebTestCase
                 "registration[lastName]" => "Doe",
                 "registration[email]" => "emailemail.com",
                 "registration[plainPassword]" => "",
+                "registration[companyName]" => "JFEAB LS",
             ],
             "Cette valeur n'est pas une adresse email valide.",
         ];
@@ -104,6 +108,7 @@ class RegisterJobSeekerTest extends WebTestCase
                 "registration[lastName]" => "Doe",
                 "registration[email]" => "email@email.com",
                 "registration[plainPassword]" => "",
+                "registration[companyName]" => "JFEAB LS",
             ],
             "Cette valeur ne doit pas être vide.",
         ];
@@ -114,8 +119,21 @@ class RegisterJobSeekerTest extends WebTestCase
                 "registration[lastName]" => "Doe",
                 "registration[email]" => "email@email.com",
                 "registration[plainPassword]" => "fail",
+                "registration[companyName]" => "JFEAB LS",
             ],
             "Cette valeur n'est pas valide.",
+        ];
+
+
+        yield [
+            [
+                "registration[companyName]" => "",
+                "registration[firstName]" => "Joearh",
+                "registration[lastName]" => "Doe",
+                "registration[email]" => "email@email.com",
+                "registration[plainPassword]" => "PaswordD!9",
+            ],
+            "Cette valeur ne doit pas être vide.",
         ];
     }
 }

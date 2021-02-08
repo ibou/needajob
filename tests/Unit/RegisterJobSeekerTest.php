@@ -3,6 +3,7 @@
 namespace App\Tests\Unit;
 
 use App\Adapter\InMemory\Repository\JobSeekerRepository;
+use App\Adapter\InMemory\Repository\RecruiterRepository;
 use App\Entity\JobSeeker;
 use App\UseCase\RegisterJobSeeker;
 use Assert\LazyAssertionException;
@@ -18,18 +19,19 @@ class RegisterJobSeekerTest extends TestCase
     public function testBadJobSeeker(JobSeeker $jobSeeker): void
     {
         $userPasswordEncoder = $this->createMock(UserPasswordEncoderInterface::class);
-        $useCase = new RegisterJobSeeker(new JobSeekerRepository(), $userPasswordEncoder);
+        $userPasswordEncoder->method('encodePassword')->willReturn('hash_password');
+
+        $useCase = new RegisterJobSeeker(new JobSeekerRepository($userPasswordEncoder), $userPasswordEncoder);
         $this->expectException(LazyAssertionException::class);
         $useCase->execute($jobSeeker);
     }
 
     public function testSuccessfullRegistration(): void
     {
-        
         $userPasswordEncoder = $this->createMock(UserPasswordEncoderInterface::class);
         $userPasswordEncoder->method("encodePassword")->willReturn("hash_password");
-        
-        $useCase = new RegisterJobSeeker(new JobSeekerRepository(), $userPasswordEncoder);
+
+        $useCase = new RegisterJobSeeker(new JobSeekerRepository($userPasswordEncoder), $userPasswordEncoder);
         $jobSeeker = new JobSeeker();
         $jobSeeker->setPlainPassword('Samourai!l');
         $jobSeeker->setEmail('email@email.com');

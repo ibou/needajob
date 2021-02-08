@@ -1,9 +1,13 @@
+register_job_seeker:
+  path: /job-seeker/register
+  controller: App\Controller\RegisterJobSeekerController
+
+register_recruiter:
+  path: /recruiter/register
+  controller: App\Controller\RegisterRecruiterController
+
 index:
   path: /
   controller: Symfony\Bundle\FrameworkBundle\Controller\TemplateController
   defaults:
     template: ui/index.html.twig
-
-register_job_seeker:
-  path: /job-seeker/register
-  controller: App\Controller\RegisterJobSeekerController

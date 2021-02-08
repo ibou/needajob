@@ -2,11 +2,13 @@
 
 namespace App\Features;
 
-use App\Adapter\InMemory\Repository\JobSeekerRepository;
-use App\Entity\JobSeeker;
-use App\UseCase\RegisterJobSeeker;
 use Assert\Assertion;
+use App\Entity\JobSeeker;
 use Behat\Behat\Context\Context;
+use App\UseCase\RegisterJobSeeker;
+use Symfony\Component\Security\Core\User\UserInterface;
+use App\Adapter\InMemory\Repository\JobSeekerRepository;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 /**
  * Class RegisterJobSeekerContext
@@ -30,7 +32,28 @@ class RegisterJobSeekerContext implements Context
      */
     public function iNeedToRegisterToLookForANewJob()
     {
-        $this->registerJobSeeker = new RegisterJobSeeker(new JobSeekerRepository());
+        $userPasswordEncoder = new class () implements UserPasswordEncoderInterface
+        {
+            /**
+             * @inheritDoc
+             */
+            public function encodePassword(UserInterface $user, string $plainPassword)
+            {
+                return "hash_password";
+            }
+
+            public function isPasswordValid(UserInterface $user, string $raw)
+            {
+            }
+
+            public function needsRehash(UserInterface $user): bool
+            {
+            }
+        };
+        $this->registerJobSeeker = new RegisterJobSeeker(
+            new JobSeekerRepository($userPasswordEncoder),
+            $userPasswordEncoder
+        );
     }
 
     /**

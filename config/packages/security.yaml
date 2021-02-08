@@ -6,7 +6,7 @@ security:
     providers:
         users_in_memory: { memory: null }
         user_provider:
-            id: security.user.provider.concrete.users_in_memory
+            id: App\Security\Provider\UserProvider
     firewalls:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
