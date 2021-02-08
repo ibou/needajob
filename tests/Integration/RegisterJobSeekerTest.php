@@ -39,10 +39,10 @@ class RegisterJobSeekerTest extends WebTestCase
 
     /**
      * @dataProvider provideBadJobSeeker
-     * @param array $formdata
+     * @param array $formData
      * @param string $errorMessage
      */
-    public function testFailRegistration(array $formdata, string $errorMessage): void
+    public function testFailRegistration(array $formData, string $errorMessage): void
     {
         $client = static::createClient();
 
@@ -56,7 +56,7 @@ class RegisterJobSeekerTest extends WebTestCase
 
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
 
-        $form = $crawler->filter("form[name=registration]")->form($formdata);
+        $form = $crawler->filter("form[name=registration]")->form($formData);
 
         $client->submit($form);
 
