@@ -2,6 +2,7 @@
 
 namespace App\Form;
 
+use App\Entity\Offer;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
@@ -52,7 +53,7 @@ class OfferType extends AbstractType
 
                 ]
             )
-        > add(
+        -> add(
             'missions',
             TextareaType::class,
             [
@@ -100,11 +101,6 @@ class OfferType extends AbstractType
                     "constraints" => [
                         new NotBlank(),
                         new Type(["type" => "interger"]),
-                        new LessThan(
-                            [
-                                "propertyPath" => "maxSalary",
-                            ]
-                        ),
                     ],
                 ]
             )
@@ -116,11 +112,6 @@ class OfferType extends AbstractType
                     "constraints" => [
                         new NotBlank(),
                         new Type(["type" => "interger"]),
-                        new GreaterThan(
-                            [
-                                "propertyPath" => "minSalary",
-                            ]
-                        ),
                     ],
                 ]
             )

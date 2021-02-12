@@ -2,7 +2,6 @@
 
 namespace App\Features;
 
-
 use App\Adapter\InMemory\Repository\OfferRepository;
 use App\Entity\Offer;
 use App\UseCase\PublishOffer;
@@ -11,12 +10,12 @@ use Behat\Behat\Context\Context;
 
 class PublishOfferContext implements Context
 {
-    
+
     private PublishOffer $publishOffer;
     private Offer $offer;
-    
-    
-    
+
+
+
     /**
       * @Given /^I want to publish an offer$/
       */
