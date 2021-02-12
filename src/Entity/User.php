@@ -157,7 +157,7 @@ abstract class User implements UserInterface, \Serializable, EquatableInterface
      */
     public function unserialize($serialized)
     {
-        list ($this->email) = unserialize($serialized, ['allowed_classes' => false]);
+        list($this->email) = unserialize($serialized, ['allowed_classes' => false]);
     }
 
     /**

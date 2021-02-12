@@ -9,7 +9,6 @@ use Doctrine\Persistence\ManagerRegistry;
 
 class OfferRepository extends ServiceEntityRepository implements OfferGateway
 {
-
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Offer::class);

@@ -48,9 +48,8 @@ class RegisterJobSeekerTest extends TestCase
                 ->setPlainPassword('Slsd$!-09')
                 ->setEmail('email@email.com')
                 ->setLastName('Doe')
-            ,
         ];
-
+//ok
         yield [
             (new JobSeeker())
                 ->setPlainPassword('Slsd$!-09')

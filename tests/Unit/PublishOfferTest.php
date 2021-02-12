@@ -1,198 +1,277 @@
 <?php
 
-namespace App\Tests\Integration;
+namespace App\Tests\Unit;
 
-use App\Adapter\InMemory\Repository\JobSeekerRepository;
-use App\Entity\JobSeeker;
-use App\Entity\Recruiter;
-use App\Tests\AuthenticationTrait;
-use App\UseCase\RegisterJobSeeker;
+use App\Adapter\InMemory\Repository\OfferRepository;
+use App\Entity\Offer;
+use App\UseCase\PublishOffer;
 use Assert\LazyAssertionException;
 use PHPUnit\Framework\TestCase;
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\RouterInterface;
 
 /**
  * Class PublishOfferTest
- * @package App\Tests\Integration
+ * @package App\Tests\Unit
  */
-class PublishOfferTest extends WebTestCase
+class PublishOfferTest extends TestCase
 {
-    //use AuthenticationTrait;
-
     public function testSuccessfulOfferPublished()
     {
-        $client = static::createAuthenticatedClient("recruiter@email.com");
+        $useCase = new PublishOffer(new OfferRepository());
 
-        /** @var RouterInterface $router */
-        $router = $client->getContainer()->get("router");
+        $offer = (new  Offer())
+            ->setName("name")
+            ->setCompanyDescription("company description")
+            ->setJobDescription("job description")
+            ->setMinSalary(32000)
+            ->setMaxSalary(38000)
+            ->setMissions("missions")
+            ->setProfile("profile")
+            ->setRemote(true)
+            ->setSoftSkills("soft skills")
+            ->setTasks("tasks")
+        ;
 
-        $crawler = $client->request(
-            Request::METHOD_GET,
-            $router->generate("publish_offer")
-        );
-
-        $this->assertResponseStatusCodeSame(Response::HTTP_OK);
-
-        $form = $crawler->filter("form")->form([
-               "offer[name]" => "name",
-               "offer[companyDescription]" => "companyDescription",
-               "offer[jobDescription]" => "jobDescription",
-               "offer[minSalary]" => 30000,
-               "offer[maxSalary]" => 40000,
-               "offer[missions]" => "missions",
-               "offer[profile]" => "profile",
-               "offer[remote]" => true,
-               "offer[softSkills]" => "softSkills",
-               "offer[tasks]" => "tasks"
-         ]);
-
-        $client->submit($form);
-
-        $this->assertResponseStatusCodeSame(Response::HTTP_FOUND);
+        $this->assertEquals($offer, $useCase->execute($offer));
     }
 
     /**
-     * @dataProvider provideBadRequest
-     * @param array $formData
+     * @dataProvider provideBadOffer
+     * @param Offer $offer
      */
-    public function testBadRequest(array $formData)
+    public function testBadOffer(Offer $offer)
     {
-        $client = static::createAuthenticatedClient("recruiter@email.com");
+        $useCase = new PublishOffer(new OfferRepository());
 
-        /** @var RouterInterface $router */
-        $router = $client->getContainer()->get("router");
+        $this->expectException(LazyAssertionException::class);
 
-        $crawler = $client->request(
-            Request::METHOD_GET,
-            $router->generate("publish_offer")
-        );
-
-        $this->assertResponseStatusCodeSame(Response::HTTP_OK);
-
-        $form = $crawler->filter("form")->form($formData);
-
-        $client->submit($form);
-
-        $this->assertResponseStatusCodeSame(Response::HTTP_OK);
+        $this->assertEquals($offer, $useCase->execute($offer));
     }
 
-    /**
-     * @return \Generator
-     */
-    public function provideBadRequest(): \Generator
+    public function provideBadOffer(): \Generator
     {
-        yield [[
-            "offer[companyDescription]" => "companyDescription",
-            "offer[jobDescription]" => "jobDescription",
-            "offer[minSalary]" => 30000,
-            "offer[maxSalary]" => 40000,
-            "offer[missions]" => "missions",
-            "offer[profile]" => "profile",
-            "offer[remote]" => true,
-            "offer[softSkills]" => "softSkills",
-            "offer[tasks]" => "tasks"
-        ]];
-        yield [[
-            "offer[name]" => "name",
-            "offer[jobDescription]" => "jobDescription",
-            "offer[minSalary]" => 30000,
-            "offer[maxSalary]" => 40000,
-            "offer[missions]" => "missions",
-            "offer[profile]" => "profile",
-            "offer[remote]" => true,
-            "offer[softSkills]" => "softSkills",
-            "offer[tasks]" => "tasks"
-        ]];
-        yield [[
-            "offer[name]" => "name",
-            "offer[companyDescription]" => "companyDescription",
-            "offer[minSalary]" => 30000,
-            "offer[maxSalary]" => 40000,
-            "offer[missions]" => "missions",
-            "offer[profile]" => "profile",
-            "offer[remote]" => true,
-            "offer[softSkills]" => "softSkills",
-            "offer[tasks]" => "tasks"
-        ]];
-        yield [[
-            "offer[name]" => "name",
-            "offer[companyDescription]" => "companyDescription",
-            "offer[jobDescription]" => "jobDescription",
-            "offer[maxSalary]" => 40000,
-            "offer[missions]" => "missions",
-            "offer[profile]" => "profile",
-            "offer[remote]" => true,
-            "offer[softSkills]" => "softSkills",
-            "offer[tasks]" => "tasks"
-        ]];
-        yield [[
-            "offer[name]" => "name",
-            "offer[companyDescription]" => "companyDescription",
-            "offer[jobDescription]" => "jobDescription",
-            "offer[minSalary]" => 30000,
-            "offer[missions]" => "missions",
-            "offer[profile]" => "profile",
-            "offer[remote]" => true,
-            "offer[softSkills]" => "softSkills",
-            "offer[tasks]" => "tasks"
-        ]];
-        yield [[
-            "offer[name]" => "name",
-            "offer[companyDescription]" => "companyDescription",
-            "offer[jobDescription]" => "jobDescription",
-            "offer[minSalary]" => 30000,
-            "offer[maxSalary]" => 40000,
-            "offer[profile]" => "profile",
-            "offer[remote]" => true,
-            "offer[softSkills]" => "softSkills",
-            "offer[tasks]" => "tasks"
-        ]];
-        yield [[
-            "offer[name]" => "name",
-            "offer[companyDescription]" => "companyDescription",
-            "offer[jobDescription]" => "jobDescription",
-            "offer[minSalary]" => 30000,
-            "offer[maxSalary]" => 40000,
-            "offer[missions]" => "missions",
-            "offer[remote]" => true,
-            "offer[softSkills]" => "softSkills",
-            "offer[tasks]" => "tasks"
-        ]];
-        yield [[
-            "offer[name]" => "name",
-            "offer[companyDescription]" => "companyDescription",
-            "offer[jobDescription]" => "jobDescription",
-            "offer[minSalary]" => 30000,
-            "offer[maxSalary]" => 40000,
-            "offer[missions]" => "missions",
-            "offer[profile]" => "profile",
-            "offer[softSkills]" => "softSkills",
-            "offer[tasks]" => "tasks"
-        ]];
-        yield [[
-            "offer[name]" => "name",
-            "offer[companyDescription]" => "companyDescription",
-            "offer[jobDescription]" => "jobDescription",
-            "offer[minSalary]" => 30000,
-            "offer[maxSalary]" => 40000,
-            "offer[missions]" => "missions",
-            "offer[profile]" => "profile",
-            "offer[remote]" => true,
-            "offer[tasks]" => "tasks"
-        ]];
-        yield [[
-            "offer[name]" => "name",
-            "offer[companyDescription]" => "companyDescription",
-            "offer[jobDescription]" => "jobDescription",
-            "offer[minSalary]" => 30000,
-            "offer[maxSalary]" => 40000,
-            "offer[missions]" => "missions",
-            "offer[profile]" => "profile",
-            "offer[remote]" => true,
-            "offer[softSkills]" => "softSkills",
-        ]];
+        yield [
+            (new  Offer())
+                ->setCompanyDescription("company description")
+                ->setJobDescription("job description")
+                ->setMinSalary(32000)
+                ->setMaxSalary(38000)
+                ->setMissions("missions")
+                ->setProfile("profile")
+                ->setRemote(true)
+                ->setSoftSkills("soft skills")
+                ->setTasks("tasks")
+        ];
+        yield [
+            (new  Offer())
+                ->setName("")
+                ->setCompanyDescription("company description")
+                ->setJobDescription("job description")
+                ->setMinSalary(32000)
+                ->setMaxSalary(38000)
+                ->setMissions("missions")
+                ->setProfile("profile")
+                ->setRemote(true)
+                ->setSoftSkills("soft skills")
+                ->setTasks("tasks")
+        ];
+        yield [
+            (new  Offer())
+                ->setName("name")
+                ->setJobDescription("job description")
+                ->setMinSalary(32000)
+                ->setMaxSalary(38000)
+                ->setMissions("missions")
+                ->setProfile("profile")
+                ->setRemote(true)
+                ->setSoftSkills("soft skills")
+                ->setTasks("tasks")
+        ];
+        yield [
+            (new  Offer())
+                ->setName("name")
+                ->setCompanyDescription("")
+                ->setJobDescription("job description")
+                ->setMinSalary(32000)
+                ->setMaxSalary(38000)
+                ->setMissions("missions")
+                ->setProfile("profile")
+                ->setRemote(true)
+                ->setSoftSkills("soft skills")
+                ->setTasks("tasks")
+        ];
+        yield [
+            (new  Offer())
+                ->setName("name")
+                ->setCompanyDescription("company description")
+                ->setMinSalary(32000)
+                ->setMaxSalary(38000)
+                ->setMissions("missions")
+                ->setProfile("profile")
+                ->setRemote(true)
+                ->setSoftSkills("soft skills")
+                ->setTasks("tasks")
+        ];
+        yield [
+            (new  Offer())
+                ->setName("name")
+                ->setCompanyDescription("company description")
+                ->setJobDescription("")
+                ->setMinSalary(32000)
+                ->setMaxSalary(38000)
+                ->setMissions("missions")
+                ->setProfile("profile")
+                ->setRemote(true)
+                ->setSoftSkills("soft skills")
+                ->setTasks("tasks")
+        ];
+        yield [
+            (new  Offer())
+                ->setName("name")
+                ->setCompanyDescription("company description")
+                ->setJobDescription("job description")
+                ->setMaxSalary(32000)
+                ->setMinSalary(38000)
+                ->setMissions("missions")
+                ->setProfile("profile")
+                ->setRemote(true)
+                ->setSoftSkills("soft skills")
+                ->setTasks("tasks")
+        ];
+        yield [
+            (new  Offer())
+                ->setName("name")
+                ->setCompanyDescription("company description")
+                ->setJobDescription("job description")
+                ->setMinSalary(38000)
+                ->setMissions("missions")
+                ->setProfile("profile")
+                ->setRemote(true)
+                ->setSoftSkills("soft skills")
+                ->setTasks("tasks")
+        ];
+        yield [
+            (new  Offer())
+                ->setName("name")
+                ->setCompanyDescription("company description")
+                ->setJobDescription("job description")
+                ->setMaxSalary(32000)
+                ->setMissions("missions")
+                ->setProfile("profile")
+                ->setRemote(true)
+                ->setSoftSkills("soft skills")
+                ->setTasks("tasks")
+        ];
+        yield [
+            (new  Offer())
+                ->setName("name")
+                ->setCompanyDescription("company description")
+                ->setJobDescription("job description")
+                ->setMinSalary(32000)
+                ->setMaxSalary(38000)
+                ->setMissions("")
+                ->setProfile("profile")
+                ->setRemote(true)
+                ->setSoftSkills("soft skills")
+                ->setTasks("tasks")
+        ];
+        yield [
+            (new  Offer())
+                ->setName("name")
+                ->setCompanyDescription("company description")
+                ->setJobDescription("job description")
+                ->setMinSalary(32000)
+                ->setMaxSalary(38000)
+                ->setProfile("profile")
+                ->setRemote(true)
+                ->setSoftSkills("soft skills")
+                ->setTasks("tasks")
+        ];
+        yield [
+            (new  Offer())
+                ->setName("name")
+                ->setCompanyDescription("company description")
+                ->setJobDescription("job description")
+                ->setMinSalary(32000)
+                ->setMaxSalary(38000)
+                ->setMissions("missions")
+                ->setProfile("")
+                ->setRemote(true)
+                ->setSoftSkills("soft skills")
+                ->setTasks("tasks")
+        ];
+        yield [
+            (new  Offer())
+                ->setName("name")
+                ->setCompanyDescription("company description")
+                ->setJobDescription("job description")
+                ->setMinSalary(32000)
+                ->setMaxSalary(38000)
+                ->setMissions("missions")
+                ->setRemote(true)
+                ->setSoftSkills("soft skills")
+                ->setTasks("tasks")
+        ];
+        yield [
+            (new  Offer())
+                ->setName("name")
+                ->setCompanyDescription("company description")
+                ->setJobDescription("job description")
+                ->setMinSalary(32000)
+                ->setMaxSalary(38000)
+                ->setMissions("missions")
+                ->setProfile("profile")
+                ->setSoftSkills("soft skills")
+                ->setTasks("tasks")
+        ];
+        yield [
+            (new  Offer())
+                ->setName("name")
+                ->setCompanyDescription("company description")
+                ->setJobDescription("job description")
+                ->setMinSalary(32000)
+                ->setMaxSalary(38000)
+                ->setMissions("missions")
+                ->setProfile("profile")
+                ->setRemote(true)
+                ->setSoftSkills("")
+                ->setTasks("tasks")
+        ];
+        yield [
+            (new  Offer())
+                ->setName("name")
+                ->setCompanyDescription("company description")
+                ->setJobDescription("job description")
+                ->setMinSalary(32000)
+                ->setMaxSalary(38000)
+                ->setMissions("missions")
+                ->setProfile("profile")
+                ->setRemote(true)
+                ->setTasks("tasks")
+        ];
+        yield [
+            (new  Offer())
+                ->setName("name")
+                ->setCompanyDescription("company description")
+                ->setJobDescription("job description")
+                ->setMinSalary(32000)
+                ->setMaxSalary(38000)
+                ->setMissions("missions")
+                ->setProfile("profile")
+                ->setRemote(true)
+                ->setSoftSkills("soft skills")
+                ->setTasks("")
+        ];
+        yield [
+            (new  Offer())
+                ->setName("name")
+                ->setCompanyDescription("company description")
+                ->setJobDescription("job description")
+                ->setMinSalary(32000)
+                ->setMaxSalary(38000)
+                ->setMissions("missions")
+                ->setProfile("profile")
+                ->setRemote(true)
+                ->setSoftSkills("soft skills")
+        ];
     }
 }
