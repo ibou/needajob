@@ -6,8 +6,6 @@ use App\Entity\Recruiter;
 use App\Gateway\RecruiterGateway;
 use Assert\Assert;
 
-use function Symfony\Component\DependencyInjection\Loader\Configurator\param;
-
 class RegisterRecruiter
 {
     private RecruiterGateway $recruiterGateway;
@@ -21,11 +19,6 @@ class RegisterRecruiter
         $this->recruiterGateway = $recruiterGateway;
     }
 
-
-    /**
-     * @param Recruiter $recruiter
-     * @return Recruiter
-     */
     public function execute(Recruiter $recruiter): Recruiter
     {
         Assert::lazy()
@@ -44,6 +37,7 @@ class RegisterRecruiter
 
             ;
         $this->recruiterGateway->register($recruiter);
+
         return $recruiter;
     }
 }

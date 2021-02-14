@@ -12,6 +12,7 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 /**
  * Class RegisterJobSeekerContext
+ *
  * @package App\Features
  */
 class RegisterJobSeekerContext implements Context
@@ -32,13 +33,14 @@ class RegisterJobSeekerContext implements Context
      */
     public function iNeedToRegisterToLookForANewJob()
     {
-        $userPasswordEncoder = new class () implements UserPasswordEncoderInterface
-        {
+        $userPasswordEncoder = new class () implements UserPasswordEncoderInterface {
             /**
              * @inheritDoc
              */
-            public function encodePassword(UserInterface $user, string $plainPassword)
-            {
+            public function encodePassword(
+                UserInterface $user,
+                string $plainPassword
+            ): string {
                 return "hash_password";
             }
 
@@ -74,6 +76,9 @@ class RegisterJobSeekerContext implements Context
      */
     public function iCanLogInWithMyNewAccount()
     {
-        Assertion::eq($this->jobSeeker, $this->registerJobSeeker->execute($this->jobSeeker));
+        Assertion::eq(
+            $this->jobSeeker,
+            $this->registerJobSeeker->execute($this->jobSeeker)
+        );
     }
 }
