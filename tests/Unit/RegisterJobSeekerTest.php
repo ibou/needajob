@@ -3,7 +3,6 @@
 namespace App\Tests\Unit;
 
 use App\Adapter\InMemory\Repository\JobSeekerRepository;
-use App\Adapter\InMemory\Repository\RecruiterRepository;
 use App\Entity\JobSeeker;
 use App\UseCase\RegisterJobSeeker;
 use Assert\LazyAssertionException;
@@ -14,7 +13,6 @@ class RegisterJobSeekerTest extends TestCase
 {
     /**
      * @dataProvider provideBadJobSeeker
-     * @param JobSeeker $jobSeeker
      */
     public function testBadJobSeeker(JobSeeker $jobSeeker): void
     {
@@ -29,7 +27,7 @@ class RegisterJobSeekerTest extends TestCase
     public function testSuccessfullRegistration(): void
     {
         $userPasswordEncoder = $this->createMock(UserPasswordEncoderInterface::class);
-        $userPasswordEncoder->method("encodePassword")->willReturn("hash_password");
+        $userPasswordEncoder->method('encodePassword')->willReturn('hash_password');
 
         $useCase = new RegisterJobSeeker(new JobSeekerRepository($userPasswordEncoder), $userPasswordEncoder);
         $jobSeeker = new JobSeeker();
@@ -47,47 +45,42 @@ class RegisterJobSeekerTest extends TestCase
             (new JobSeeker())
                 ->setPlainPassword('Slsd$!-09')
                 ->setEmail('email@email.com')
-                ->setLastName('Doe')
+                ->setLastName('Doe'),
         ];
-//ok
+        //ok
         yield [
             (new JobSeeker())
                 ->setPlainPassword('Slsd$!-09')
                 ->setEmail('email@email.com')
-                ->setFirstName('Jonhy')
-            ,
+                ->setFirstName('Jonhy'),
         ];
         yield [
             (new JobSeeker())
                 ->setPlainPassword('Slsd$!-09')
                 ->setEmail('fail.com')
                 ->setFirstName('Johny')
-                ->setLastName('Doe')
-            ,
+                ->setLastName('Doe'),
         ];
 
         yield [
             (new JobSeeker())
                 ->setPlainPassword('Slsd$!-09')
                 ->setFirstName('Johny')
-                ->setLastName('Doe')
-            ,
+                ->setLastName('Doe'),
         ];
 
         yield [
             (new JobSeeker())
                 ->setFirstName('Johny')
                 ->setLastName('Doe')
-                ->setEmail('email@email.com')
-            ,
+                ->setEmail('email@email.com'),
         ];
         yield [
             (new JobSeeker())
                 ->setPlainPassword('fail')
                 ->setFirstName('Johny')
                 ->setLastName('Doe')
-                ->setEmail('email@email.com')
-            ,
+                ->setEmail('email@email.com'),
         ];
 
         yield [
@@ -95,8 +88,7 @@ class RegisterJobSeekerTest extends TestCase
                 ->setPlainPassword('')
                 ->setFirstName('Johny')
                 ->setLastName('Doe')
-                ->setEmail('email@email.com')
-            ,
+                ->setEmail('email@email.com'),
         ];
     }
 }
